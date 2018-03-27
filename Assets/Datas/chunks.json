@@ -1,0 +1,19 @@
+{
+	"chunks":[
+		{
+			"chunkName": "basic",
+			"chunkId": 1,
+			"chunkProbability": 0.33
+		},
+		{
+			"chunkName": "corridor",
+			"chunkId": 2,
+			"chunkProbability": 0.33
+		},
+		{
+			"chunkName": "stairs",
+			"chunkId": 3,
+			"chunkProbability": 0.33
+		}
+	]   
+}
