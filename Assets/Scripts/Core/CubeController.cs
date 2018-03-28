@@ -6,7 +6,8 @@ public class CubeController : MonoBehaviour
 {
     public float maxSpeed = 10f;
     private Rigidbody2D _rigidBody2D;
-    private bool isJumping = false;
+    private int jumpCount=0;
+
     // Use this for initialization
     void Start()
     {
@@ -16,20 +17,26 @@ public class CubeController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float translation = Input.GetAxis("Vertical") * maxSpeed;
-        //Debug.Log(Input.GetAxis("Vertical"));
-        if (Input.GetAxis("Vertical") > 0)
-            isJumping = true;
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (Input.GetKeyDown(KeyCode.UpArrow) && jumpCount == 0)
         {
-            //_rigidBody2D.velocity = new Vector2(_rigidBody2D.velocity.x, translation);
             _rigidBody2D.AddForce(new Vector2(0, 500));
+            jumpCount = 1;
         }
-        //_rigidBody2D.velocity = new Vector2(_rigidBody2D.velocity.x, translation);
-        //_rigidBody2D.AddForce(new Vector2(0, 500));
-        if (_rigidBody2D.position.y > 1)
-            _rigidBody2D.position = new Vector2(_rigidBody2D.position.x, 1);
+
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            transform.localScale += new Vector3(0.5F, -0.5F,0);
+        }
+        if (Input.GetKeyUp(KeyCode.DownArrow))
+        {
+            transform.localScale += new Vector3(-0.5F, 0.5F, 0);
+        }
         //_rigidBody2D.position = new Vector2(_rigidBody2D.position.x+0.01f, _rigidBody2D.position.y);
-        Debug.Log(Input.GetKeyDown(KeyCode.UpArrow));
+        //Debug.Log();
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        jumpCount = 0;
     }
 }
