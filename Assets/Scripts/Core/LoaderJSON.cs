@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using LoadChunk;
+
 
 [System.Serializable]
 public class Chunk {
@@ -13,22 +13,16 @@ public class Chunk {
 
 }
 
+[System.Serializable]
+public class CollectionChunks
+{
+   public Chunk[] chunks;
+}
 
-public class LoaderJSON : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+public class LoaderJSON {
 
-        DontDestroyOnLoad(gameObject);
-		LoadGameData("Datas/chunks.json");
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
-	private void LoadGameData(string gameDataFileName){
+	public Chunk[] LoadGameData(string gameDataFileName){
         // Path.Combine combines strings into a file path
         // Application.StreamingAssets points to Assets/StreamingAssets in the Editor, and the StreamingAssets folder in a build
         string filePath = Path.Combine(Application.dataPath, gameDataFileName);
@@ -38,16 +32,14 @@ public class LoaderJSON : MonoBehaviour {
             // Read the json from the file into a string
             string dataAsJson = File.ReadAllText(filePath); 
             // Pass the json to JsonUtility, and tell it to create a GameData object from it
-            Chunk[] chunks = JsonHelper.FromJson<Chunk>(dataAsJson);
-            Debug.Log(chunks[0]);
-
-
-            // Retrieve the allRoundData property of loadedData
-            //allRoundData = loadedData.allRoundData;
+            CollectionChunks collectionChunks = JsonUtility.FromJson<CollectionChunks>(dataAsJson);
+            Debug.Log(collectionChunks.chunks.Length);
+            return collectionChunks.chunks;
         }
         else
         {
             Debug.LogError("Cannot load game data!");
+            return null;
         }
     }
 
