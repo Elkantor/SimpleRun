@@ -21,6 +21,5 @@ public class CubeController : MonoBehaviour {
         _rigidBody2D.velocity = new Vector2(_rigidBody2D.velocity.x, translation);
         if (_rigidBody2D.position.y > 1)
             _rigidBody2D.position = new Vector2(_rigidBody2D.position.x, 1);
-        Debug.Log(_rigidBody2D.position.y);
     }
 }

@@ -10,6 +10,11 @@ public class Chunk {
     public string chunkName;
     public int chunkId;
     public float chunkProbability;
+    public float chunkHeight;
+    public float chunkWidth;
+    public float chunkColorRed;
+    public float chunkColorBlue;
+    public float chunkColorGreen;
 
 }
 
@@ -33,7 +38,6 @@ public class LoaderJSON {
             string dataAsJson = File.ReadAllText(filePath); 
             // Pass the json to JsonUtility, and tell it to create a GameData object from it
             CollectionChunks collectionChunks = JsonUtility.FromJson<CollectionChunks>(dataAsJson);
-            Debug.Log(collectionChunks.chunks.Length);
             return collectionChunks.chunks;
         }
         else
