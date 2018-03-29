@@ -5,11 +5,12 @@ using UnityEngine;
 public class Main : MonoBehaviour {
 
     List<GameObject> levelChunks = new List<GameObject>();
-
+    GameObject character;
     float currentPositionX = 0;
     float currentPositionY = 0;
 
     void Start() {
+        character = GameObject.Find("Character");
         DontDestroyOnLoad(gameObject);
         currentPositionX = Camera.main.ViewportToWorldPoint(new Vector2(0, 0)).x;
         InitializeMap();
@@ -92,6 +93,7 @@ public class Main : MonoBehaviour {
             LevelComponent levelComponentScript = chunk.GetComponent<LevelComponent>();
             levelComponentScript.gameStarted = true;
         }
+        character.GetComponent<CubeController>().gameStarted=true;
     }
 
 	void Update () {

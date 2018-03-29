@@ -5,6 +5,8 @@ using UnityEngine;
 public class CubeController : MonoBehaviour
 {
     public float maxSpeed = 1f;
+    public float speedScrolling = 0.01f;
+    public bool gameStarted;
     private Rigidbody2D _rigidBody2D;
     private int jumpCount=0;
     private bool droit=true;
@@ -24,6 +26,11 @@ public class CubeController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (gameStarted)
+        {
+            transform.position = new Vector3(transform.position.x - speedScrolling, transform.position.y, transform.position.z);
+        }
+
         //Check si cube est tombé
         if (Mathf.Round(transform.rotation.eulerAngles.z) == 90 || Mathf.Round(transform.rotation.eulerAngles.z) == 270)
             droit = false;
@@ -31,8 +38,6 @@ public class CubeController : MonoBehaviour
             droit = true;
 
         float translation = Input.GetAxis("Horizontal") * maxSpeed;
-        Debug.Log("Translaation"+translation);
-        Debug.Log("velocityx"+_rigidBody2D.velocity.x);
         if (translation != 0)
         {
             if (translation > 2)
