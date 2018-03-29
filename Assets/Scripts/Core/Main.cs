@@ -28,7 +28,7 @@ public class Main : MonoBehaviour {
             probabilities[i] = probabilities[i - 1] + chunks[i].chunkProbability;
         }
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 20; i++) {
             float probability = Random.Range(0.0f, 1.0f);
             float previousProbability = 0.0f;
             for (int j = 0; j < probabilities.Length; j++) {
