@@ -76,7 +76,6 @@ public class LevelComponent : MonoBehaviour {
 
         spriteRenderer.color = new Color(chunk.chunkColorRed, chunk.chunkColorGreen, chunk.chunkColorBlue);
         transform.localScale = new Vector3(width, height, 1);
-        Debug.Log("New width:" + width + " |  New height: " + height);
         // Set the position of this game object, to be next to the previous game object
         float newX = previousChunk.transform.position.x + (previousChunk.transform.localScale.x/10) + (width/10);
         float newY = height/10;
