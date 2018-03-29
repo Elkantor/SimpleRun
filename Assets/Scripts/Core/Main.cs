@@ -12,11 +12,12 @@ public class Main : MonoBehaviour {
 
     void Start() {
         DontDestroyOnLoad(gameObject);
-        currentPositionX = Camera.main.ViewportToWorldPoint(new Vector2(0, 0)).x;
         InitializeMap();
     }
 
     private void InitializeMap() {
+        currentPositionX = Camera.main.ViewportToWorldPoint(new Vector2(0, 0)).x;
+        currentPositionY = 0;
         LoaderJSON loaderChunks = new LoaderJSON();
         Chunk[] chunks = loaderChunks.LoadGameData("Datas/Chunks.json");
 
@@ -110,17 +111,26 @@ public class Main : MonoBehaviour {
         //To restart
         if (Input.GetKeyDown("r"))
         {
-            //TO DO : Start function
+            foreach(GameObject go in levelChunks)
+            {
+                DestroyImmediate(go);
+            }
+            levelChunks.Clear();
+            InitializeMap();
         }
-
         if (stop)
         {
             if (Input.GetKeyDown("escape"))
             {
                 Application.Quit();
             }
+
             if (Input.GetKeyDown("c"))
             {
+                foreach (GameObject chunk in levelChunks)
+                {
+                    chunk.GetComponent<LevelComponent>().speedScrolling = 0.01f;
+                }
                 pauseText.SetActive(false);
                 stop = false;
             }
@@ -135,6 +145,7 @@ public class Main : MonoBehaviour {
                     chunk.GetComponent<LevelComponent>().speedScrolling = 0;
                 }
                 pauseText.SetActive(true);
+                stop = true;
             }
         }
     }
@@ -144,5 +155,6 @@ public class Main : MonoBehaviour {
             LevelComponent levelComponentScript = chunk.GetComponent<LevelComponent>();
             levelComponentScript.gameStarted = true;
         }
+        stop = false;
     }
 }
