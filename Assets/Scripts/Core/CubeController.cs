@@ -32,17 +32,17 @@ public class CubeController : MonoBehaviour
         {
             transform.localScale += new Vector3(-0.5F, 0.5F, 0);
         }
-        _rigidBody2D.position = new Vector2(_rigidBody2D.position.x+0.01f, _rigidBody2D.position.y);
+        //_rigidBody2D.position = new Vector2(_rigidBody2D.position.x+0.01f, _rigidBody2D.position.y);
         //Debug.Log();
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+
         if (jumpCount == 1)
         {
             transform.localScale += new Vector3(0.5F, -0.5F, 0);
         }
         jumpCount = 0;
-        
     }
 }
