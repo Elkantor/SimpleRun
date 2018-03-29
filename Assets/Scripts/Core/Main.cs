@@ -5,11 +5,13 @@ using UnityEngine;
 public class Main : MonoBehaviour {
 
     public GameObject gameOverText;
+    public GameObject pauseText;
+    public GameObject scoreText;
 
     private List<LevelComponent> levelComponents = new List<LevelComponent>();
     private float currentPositionX = 0;
     private float currentPositionY = 0;
-
+    private bool stop = true;
 
     void Start () {
 		DontDestroyOnLoad(gameObject);
@@ -21,7 +23,7 @@ public class Main : MonoBehaviour {
 		LoaderJSON loaderChunks = new LoaderJSON();
 		Chunk[] chunks = loaderChunks.LoadGameData("Datas/Chunks.json");
         GameObject chunk = CreateChunk(chunks[0]);
-        GameObject chunk2 = CreateChunk(chunks[1]);
+        GameObject chunk2 = CreateChunk(chunks[1]); 
     }
 
     GameObject CreateChunk(Chunk chunk){
@@ -79,18 +81,40 @@ public class Main : MonoBehaviour {
 
         //Active GameOver
         gameOverText.SetActive(true);
-        if (Input.GetKey("escape"))
-        {
-            Application.Quit();
-        }
+        stop = true;
     }
 
 	void Update ()
     {
         //To restart
-        if (Input.GetKey("r"))
+        if (Input.GetKeyDown("r"))
         {
             //TO DO : Start function
+        }
+
+        if (stop)
+        {
+            if (Input.GetKeyDown("escape"))
+            {
+                Application.Quit();
+            }
+            if (Input.GetKeyDown("c"))
+            {
+                pauseText.SetActive(false);
+                stop = false;
+            }
+        }
+        else
+        {
+            if (Input.GetKeyDown("escape"))
+            {
+                // Stop level movment
+                foreach (LevelComponent lvl in levelComponents)
+                {
+                    lvl.speedScrolling = 0;
+                }
+                pauseText.SetActive(true);
+            }
         }
     }
 }
