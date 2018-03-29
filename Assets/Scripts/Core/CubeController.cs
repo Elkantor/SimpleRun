@@ -54,6 +54,7 @@ public class CubeController : MonoBehaviour
 
     void OnBecameInvisible()
     {
-        gameManager.IsFinish = true;
+        gameManager.GameOver();
+
     }
 }

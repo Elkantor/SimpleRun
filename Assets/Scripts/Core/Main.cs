@@ -9,19 +9,6 @@ public class Main : MonoBehaviour {
     private List<LevelComponent> levelComponents = new List<LevelComponent>();
     private float currentPositionX = 0;
     private float currentPositionY = 0;
-    private bool finish = false;
-    public bool IsFinish
-    {
-        get
-        {
-            return finish;
-        }
-
-        set
-        {
-            finish = value;
-        }
-    }
 
 
     void Start () {
@@ -82,15 +69,28 @@ public class Main : MonoBehaviour {
 
     }
 
+    public void GameOver()
+    {
+        // Stop level movment
+        foreach (LevelComponent lvl in levelComponents)
+        {
+            lvl.speedScrolling = 0;
+        }
+
+        //Active GameOver
+        gameOverText.SetActive(true);
+        if (Input.GetKey("escape"))
+        {
+            Application.Quit();
+        }
+    }
+
 	void Update ()
     {
-		if(IsFinish)
+        //To restart
+        if (Input.GetKey("r"))
         {
-            foreach(LevelComponent lvl in levelComponents)
-            {
-                lvl.speedScrolling = 0;
-            }
-            gameOverText.SetActive(true);
+            //TO DO : Start function
         }
     }
 }
