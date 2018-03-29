@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Main : MonoBehaviour {
 
-    List<LevelComponent> levelComponents = new List<LevelComponent>();
+    List<GameObject> levelChunks = new List<GameObject>();
     float currentPositionX = 0;
     float currentPositionY = 0;
 
@@ -19,10 +19,11 @@ public class Main : MonoBehaviour {
 		Chunk[] chunks = loaderChunks.LoadGameData("Datas/Chunks.json");
         GameObject chunk = CreateChunk(chunks[0]);
         GameObject chunk2 = CreateChunk(chunks[1]);
+        StartGame();
     }
 
     GameObject CreateChunk(Chunk chunk){
-        GameObject chunkGameObject = new GameObject("Chunk" + levelComponents.Count);
+        GameObject chunkGameObject = new GameObject("Chunk" + levelChunks.Count);
         LevelComponent levelComponent = chunkGameObject.AddComponent<LevelComponent>();
 
         levelComponent.LoadLevelComponent(
@@ -33,8 +34,6 @@ public class Main : MonoBehaviour {
             chunk.chunkColorGreen,
             chunk.chunkColorBlue
         );
-        
-        levelComponents.Add(levelComponent);
         
         GameObject templateGameObject = GameObject.Find("Ground");
         SpriteRenderer templateSpriteRenderer = templateGameObject.GetComponent<SpriteRenderer>();
@@ -47,12 +46,10 @@ public class Main : MonoBehaviour {
         BoxCollider2D chunkBoxCollider2D = chunkGameObject.AddComponent<BoxCollider2D>();
         chunkBoxCollider2D.size = new Vector2(0.2f, 0.2f);
 
-        Debug.Log("currentPosX " + currentPositionX);
         // Set the position of the new game object
         float newX = this.currentPositionX + (levelComponent.width / 10);
         float newY = this.currentPositionY + (levelComponent.height / 10);
         chunkGameObject.transform.position = new Vector3(newX, newY, 0);
-        Debug.Log("pos new object " + newX);
 
 
         // Update the coordinates of the current game object created in the scene
@@ -61,9 +58,19 @@ public class Main : MonoBehaviour {
 
         // Update the scale of the new game object
         chunkGameObject.transform.localScale = new Vector2(chunk.chunkWidth, chunk.chunkHeight);
+        levelChunks.Add(chunkGameObject);
 
         return chunkGameObject;
 
+    }
+
+    void StartGame(){
+        Debug.Log(levelChunks.Count);
+        foreach(GameObject chunk in levelChunks){
+            LevelComponent levelComponentScript = chunk.GetComponent<LevelComponent>();
+            //levelComponentScript.speedScrolling = 0.01f;
+            levelComponentScript.gameStarted = true;
+        }
     }
 
 	void Update () {

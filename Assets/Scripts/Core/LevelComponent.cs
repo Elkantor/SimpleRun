@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class LevelComponent : MonoBehaviour {
 
+    public bool gameStarted = false;
     SpriteRenderer spriteRenderer;
     public float width;
     public float height;
@@ -11,7 +12,7 @@ public class LevelComponent : MonoBehaviour {
     public float colorR;
     public float colorB;
     public float colorG;
-    public float speedScrolling = 0;
+    public float speedScrolling = 0.01f;
 
     public void LoadLevelComponent(float width, float height, float probability, float colorR, float colorG, float colorB){
         this.width = width;
@@ -29,7 +30,10 @@ public class LevelComponent : MonoBehaviour {
 
     // Update is called once per frame
     void Update(){
-
+        if (gameStarted){
+            Debug.Log(transform.position.x);
+            transform.position = new Vector3(transform.position.x - speedScrolling, transform.position.y, transform.position.z);
+        }
     }
 
 }
