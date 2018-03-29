@@ -5,12 +5,18 @@ using UnityEngine;
 public class CubeController : MonoBehaviour
 {
     public float maxSpeed = 10f;
+    public Main gameManager;
+
     private Rigidbody2D _rigidBody2D;
     private int jumpCount=0;
 
     // Use this for initialization
     void Start()
     {
+        if (!gameManager && GameObject.Find("GameManager"))
+        {
+            gameManager = GameObject.Find("GameManager").GetComponent<Main>();
+        }
         _rigidBody2D = GetComponent<Rigidbody2D>();
     }
 
@@ -44,5 +50,10 @@ public class CubeController : MonoBehaviour
             transform.localScale += new Vector3(0.5F, -0.5F, 0);
         }
         jumpCount = 0;
+    }
+
+    void OnBecameInvisible()
+    {
+        gameManager.IsFinish = true;
     }
 }

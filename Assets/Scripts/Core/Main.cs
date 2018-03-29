@@ -4,11 +4,27 @@ using UnityEngine;
 
 public class Main : MonoBehaviour {
 
-    List<LevelComponent> levelComponents = new List<LevelComponent>();
-    float currentPositionX = 0;
-    float currentPositionY = 0;
+    public GameObject gameOverText;
 
-	void Start () {
+    private List<LevelComponent> levelComponents = new List<LevelComponent>();
+    private float currentPositionX = 0;
+    private float currentPositionY = 0;
+    private bool finish = false;
+    public bool IsFinish
+    {
+        get
+        {
+            return finish;
+        }
+
+        set
+        {
+            finish = value;
+        }
+    }
+
+
+    void Start () {
 		DontDestroyOnLoad(gameObject);
         currentPositionX = Camera.main.ViewportToWorldPoint(new Vector2(0, 0)).x;
         InitializeMap();
@@ -66,7 +82,15 @@ public class Main : MonoBehaviour {
 
     }
 
-	void Update () {
-		
-	}
+	void Update ()
+    {
+		if(IsFinish)
+        {
+            foreach(LevelComponent lvl in levelComponents)
+            {
+                lvl.speedScrolling = 0;
+            }
+            gameOverText.SetActive(true);
+        }
+    }
 }
