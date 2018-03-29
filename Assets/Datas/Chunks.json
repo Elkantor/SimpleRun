@@ -24,8 +24,8 @@
       "chunkName": "stairs",
       "chunkId": 3,
       "chunkProbability": 0.33,
-      "chunkHeight": 1,
-      "chunkWidth": 5,
+      "chunkHeight": 3,
+      "chunkWidth": 2,
       "chunkColorRed": 255,
       "chunkColorBlue": 255,
       "chunkColorGreen": 255
