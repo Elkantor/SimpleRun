@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CubeController : MonoBehaviour
 {
-    public float maxSpeed = 10f;
+    public float maxSpeed = 1f;
     private Rigidbody2D _rigidBody2D;
     private int jumpCount=0;
     private bool droit=true;
@@ -24,10 +24,23 @@ public class CubeController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Check si cube est tombé
         if (Mathf.Round(transform.rotation.eulerAngles.z) == 90 || Mathf.Round(transform.rotation.eulerAngles.z) == 270)
             droit = false;
         else
             droit = true;
+
+        float translation = Input.GetAxis("Horizontal") * maxSpeed;
+        Debug.Log("Translaation"+translation);
+        Debug.Log("velocityx"+_rigidBody2D.velocity.x);
+        if (translation != 0)
+        {
+            if (translation > 2)
+                translation = 2;
+            if (translation < -2)
+                translation = -2;
+            _rigidBody2D.velocity = new Vector2(translation, _rigidBody2D.velocity.y);
+        }
         if (Input.GetKeyDown(KeyCode.UpArrow) && jumpCount == 0)
         {
             _rigidBody2D.AddForce(new Vector2(0, 500));
@@ -67,7 +80,6 @@ public class CubeController : MonoBehaviour
                 transform.localScale += new Vector3(0.5F, -0.5F, 0);
             else
                 transform.localScale += new Vector3(-0.5F, 0.5F, 0);
-            Debug.Log(droit);
         }
         jumpCount = 0;
     }
