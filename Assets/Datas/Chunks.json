@@ -5,7 +5,7 @@
 			"chunkId": 1,
       "chunkProbability": 0.33,
       "chunkHeight": 2,
-      "chunkWidth": 20,
+      "chunkWidth": 5,
       "chunkColorRed": 255,
       "chunkColorBlue": 255,
       "chunkColorGreen": 0
@@ -15,17 +15,17 @@
       "chunkId": 2,
       "chunkProbability": 0.33,
       "chunkHeight": 4,
-      "chunkWidth": 5,
+      "chunkWidth": 2,
       "chunkColorRed": 0,
       "chunkColorBlue": 255,
       "chunkColorGreen": 255
     },
     {
       "chunkName": "stairs",
-      "chunkId": 3,
+      "chunkId": 2,
       "chunkProbability": 0.33,
-      "chunkHeight": 1,
-      "chunkWidth": 5,
+      "chunkHeight": 3,
+      "chunkWidth": 2,
       "chunkColorRed": 255,
       "chunkColorBlue": 255,
       "chunkColorGreen": 255
