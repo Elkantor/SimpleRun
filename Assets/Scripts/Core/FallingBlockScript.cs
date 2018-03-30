@@ -8,9 +8,9 @@ public class FallingBlockScript : MonoBehaviour {
     public bool gameStarted;
     float hautcameraY;
     float speedShake=50.0f;
-    float timeShake=2.0f;
+    float timeShake=1.5f;
     float startTime = 0.0f;
-    float move=0.05f;
+    float nextActionTime=0.05f;
     Rigidbody2D _rigidbody2D;
 
     // Use this for initialization
@@ -28,11 +28,13 @@ public class FallingBlockScript : MonoBehaviour {
             transform.position = new Vector3(transform.position.x - speedScrolling, transform.position.y, transform.position.z);
         }
         Vector3 newpos = GameObject.Find("Character").transform.position;
-        if (Input.GetKeyDown("b"))
+        if (Time.time > nextActionTime)
         {
             startTime = Time.time;
             _rigidbody2D.simulated = false;
             transform.position = new Vector2(newpos.x + 1, hautcameraY + Camera.main.transform.position.y * 2);
+            nextActionTime = Time.time+Random.Range(4.0f, 8.0f);
+            
         }
         float AngleAmount = (Mathf.Sin(Time.time * speedShake) * 180) / Mathf.PI * 0.5f;
         AngleAmount = Mathf.Clamp(AngleAmount, -15, 15);
