@@ -17,7 +17,7 @@ public class Main : MonoBehaviour {
     bool stop = true;
     float currentPositionX = 0;
     float currentPositionY = 0;
-    float timeBegin, timePause;
+    public float timeBegin, timePause;
     float bestScore = 0.0f;
     LoaderJSON loaderJson = new LoaderJSON();
 

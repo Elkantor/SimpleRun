@@ -59,6 +59,9 @@ public class LevelComponent : MonoBehaviour {
     // Update is called once per frame
     void Update(){
         if (gameStarted){
+            Main main = GameObject.Find("GameManager").GetComponent<Main>();
+            Debug.Log("lerp: " + Mathf.Lerp(main.timeBegin, Time.time, Mathf.SmoothStep(main.timeBegin, Time.time, 0.01f)));
+            speedScrolling += Mathf.Lerp(main.timeBegin, Time.time, Mathf.SmoothStep(main.timeBegin, Time.time, 0.01f)) / 1000000.0f;
             transform.position = new Vector3(transform.position.x - speedScrolling, transform.position.y, transform.position.z);
             if((transform.position.x + width/10) <= cameraBoundXNegative)
             {
@@ -112,6 +115,7 @@ public class LevelComponent : MonoBehaviour {
                 chunksPossibilities
             );
             levelComponent.gameStarted = true;
+            levelComponent.speedScrolling = speedScrolling;
 
             SpriteRenderer chunkSpriteRenderer2 = chunkGameObject.AddComponent<SpriteRenderer>();
             chunkSpriteRenderer2.color = new Color(colorR, colorG, colorB);

@@ -3,7 +3,7 @@
 		{
 			"chunkName": "basic",
 			"chunkId": 1,
-      "chunkProbability": 0.33,
+      "chunkProbability": 0.13,
       "chunkHeight": 2,
       "chunkWidth": 5,
       "chunkColorRed": 255,
@@ -23,7 +23,7 @@
     {
       "chunkName": "stairs",
       "chunkId": 3,
-      "chunkProbability": 0.33,
+      "chunkProbability": 0.53,
       "chunkHeight": 3,
       "chunkWidth": 2,
       "chunkColorRed": 255,
