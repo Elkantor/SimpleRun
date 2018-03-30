@@ -7,12 +7,14 @@ public class Main : MonoBehaviour {
     public GameObject pauseText, gameOverText;
     List<GameObject> levelChunks = new List<GameObject>();
     GameObject character;
+    GameObject fallingBlock;
     bool stop = true;
     float currentPositionX = 0;
     float currentPositionY = 0;
 
     void Start() {
         character = GameObject.Find("Character");
+        fallingBlock = GameObject.Find("Fallingblock");
         DontDestroyOnLoad(gameObject);
         InitializeMap();
     }
@@ -158,6 +160,7 @@ public class Main : MonoBehaviour {
             levelComponentScript.gameStarted = true;
         }
         character.GetComponent<CubeController>().gameStarted=true;
+        fallingBlock.GetComponent<FallingBlockScript>().gameStarted = true;
         stop = false;
     }
 }
