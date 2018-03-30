@@ -5,18 +5,30 @@ using UnityEngine;
 public class CubeController : MonoBehaviour
 {
     public float maxSpeed = 10f;
+    public Main gameManager;
+
     private Rigidbody2D _rigidBody2D;
     private int jumpCount=0;
+    float cameraBoundXNegative;
 
     // Use this for initialization
     void Start()
     {
+        if (!gameManager && GameObject.Find("GameManager"))
+        {
+            gameManager = GameObject.Find("GameManager").GetComponent<Main>();
+        }
         _rigidBody2D = GetComponent<Rigidbody2D>();
+        cameraBoundXNegative = Camera.main.ViewportToWorldPoint(new Vector2(0, 0)).x;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown("r"))
+        {
+            transform.position = new Vector3(0.0f, 2.0f, 0.0f);
+        }
         if (Input.GetKeyDown(KeyCode.UpArrow) && jumpCount == 0)
         {
             _rigidBody2D.AddForce(new Vector2(0, 500));
@@ -31,6 +43,10 @@ public class CubeController : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.DownArrow))
         {
             transform.localScale += new Vector3(-0.5F, 0.5F, 0);
+        }
+        if ((transform.position.x + transform.localScale.x / 10) <= cameraBoundXNegative)
+        {
+            gameManager.GameOver();
         }
         //_rigidBody2D.position = new Vector2(_rigidBody2D.position.x+0.01f, _rigidBody2D.position.y);
         //Debug.Log();

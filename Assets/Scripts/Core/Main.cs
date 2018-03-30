@@ -4,18 +4,20 @@ using UnityEngine;
 
 public class Main : MonoBehaviour {
 
+    public GameObject pauseText, gameOverText;
     List<GameObject> levelChunks = new List<GameObject>();
-
+    bool stop = true;
     float currentPositionX = 0;
     float currentPositionY = 0;
 
     void Start() {
         DontDestroyOnLoad(gameObject);
-        currentPositionX = Camera.main.ViewportToWorldPoint(new Vector2(0, 0)).x;
         InitializeMap();
     }
 
     private void InitializeMap() {
+        currentPositionX = Camera.main.ViewportToWorldPoint(new Vector2(0, 0)).x;
+        currentPositionY = 0;
         LoaderJSON loaderChunks = new LoaderJSON();
         Chunk[] chunks = loaderChunks.LoadGameData("Datas/Chunks.json");
 
@@ -86,17 +88,73 @@ public class Main : MonoBehaviour {
         levelChunks.Add(chunkGameObject);
 
     }
+    
+    public void GameOver()
+    {
+        // Stop level movment
+        foreach (GameObject chunk in levelChunks)
+        {
+            chunk.GetComponent<LevelComponent>().speedScrolling = 0;
+        }
+
+        //Active GameOver
+        gameOverText.SetActive(true);
+        stop = true;
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown("space"))
+        {
+            StartGame();
+        }
+        //To restart
+        if (Input.GetKeyDown("r"))
+        {
+            foreach(GameObject go in levelChunks)
+            {
+                DestroyImmediate(go);
+            }
+            levelChunks.Clear();
+            InitializeMap();
+        }
+        if (stop)
+        {
+            if (Input.GetKeyDown("escape"))
+            {
+                Application.Quit();
+            }
+
+            if (Input.GetKeyDown("c"))
+            {
+                foreach (GameObject chunk in levelChunks)
+                {
+                    chunk.GetComponent<LevelComponent>().speedScrolling = 0.01f;
+                }
+                pauseText.SetActive(false);
+                stop = false;
+            }
+        }
+        else
+        {
+            if (Input.GetKeyDown("escape"))
+            {
+                // Stop level movment
+                foreach (GameObject chunk in levelChunks)
+                {
+                    chunk.GetComponent<LevelComponent>().speedScrolling = 0;
+                }
+                pauseText.SetActive(true);
+                stop = true;
+            }
+        }
+    }
 
     void StartGame(){
         foreach(GameObject chunk in levelChunks){
             LevelComponent levelComponentScript = chunk.GetComponent<LevelComponent>();
             levelComponentScript.gameStarted = true;
         }
-    }
-
-	void Update () {
-        if (Input.GetKeyDown("space")) {
-            StartGame();
-        }
+        stop = false;
     }
 }
