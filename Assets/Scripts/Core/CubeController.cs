@@ -15,6 +15,7 @@ public class CubeController : MonoBehaviour
     private AudioSource audioSquish;
     public Main gameManager;
     float cameraBoundXNegative;
+    bool becameInvisible = false;
 
     // Use this for initialization
     void Start()
@@ -35,6 +36,8 @@ public class CubeController : MonoBehaviour
     {
         if (gameStarted)
         {
+            Main main = GameObject.Find("GameManager").GetComponent<Main>();
+            speedScrolling += Mathf.Lerp(main.timeBegin, Time.time, Mathf.SmoothStep(main.timeBegin, Time.time, 0.01f)) / 1000000.0f;
             transform.position = new Vector3(transform.position.x - speedScrolling, transform.position.y, transform.position.z);
         }
 
@@ -47,19 +50,18 @@ public class CubeController : MonoBehaviour
         float translation = Input.GetAxis("Horizontal") * maxSpeed;
         if (translation != 0)
         {
-            if (translation > 2)
-                translation = 2;
+            
             if (translation < -2)
                 translation = -2;
             _rigidBody2D.velocity = new Vector2(translation, _rigidBody2D.velocity.y);
         }
         if (Input.GetKeyDown("r"))
         {
-            transform.position = new Vector3(0.0f, 2.0f, 0.0f);
+            ResetPosition();
         }
         if (Input.GetKeyDown(KeyCode.UpArrow) && jumpCount == 0)
         {
-            _rigidBody2D.AddForce(new Vector2(0, 500));
+            _rigidBody2D.AddForce(new Vector2(0, 15),ForceMode2D.Impulse);
             if (!droit && transform.localScale.y!=0.5)
                 transform.localScale += new Vector3(0.5F, -0.5F, 0);
             else if (transform.localScale.x != 0.5)
@@ -85,7 +87,15 @@ public class CubeController : MonoBehaviour
         }
         if ((transform.position.x + transform.localScale.x / 10) <= cameraBoundXNegative)
         {
-            gameManager.GameOver();
+            if(!becameInvisible)
+            {
+                gameManager.GameOver();
+                becameInvisible = true;
+            }
+        }
+        else
+        {
+            becameInvisible = false;
         }
         //_rigidBody2D.position = new Vector2(_rigidBody2D.position.x+0.01f, _rigidBody2D.position.y);
         //Debug.Log();
@@ -102,5 +112,10 @@ public class CubeController : MonoBehaviour
                 transform.localScale += new Vector3(-0.5F, 0.5F, 0);
         }
         jumpCount = 0;
+    }
+
+    public void ResetPosition()
+    {
+        transform.position = new Vector3(0.0f, 2.0f, 0.0f);
     }
 }

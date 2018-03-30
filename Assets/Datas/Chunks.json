@@ -3,29 +3,29 @@
 		{
 			"chunkName": "basic",
 			"chunkId": 1,
-      "chunkProbability": 0.33,
+      "chunkProbability": 0.2,
       "chunkHeight": 2,
-      "chunkWidth": 5,
-      "chunkColorRed": 255,
-      "chunkColorBlue": 255,
-      "chunkColorGreen": 0
+      "chunkWidth": 4,
+      "chunkColorRed": 91,
+      "chunkColorBlue": 17,
+      "chunkColorGreen": 11
 		},
     {
       "chunkName": "corridor",
       "chunkId": 2,
-      "chunkProbability": 0.33,
+      "chunkProbability": 0.4,
       "chunkHeight": 4,
-      "chunkWidth": 2,
-      "chunkColorRed": 0,
-      "chunkColorBlue": 255,
-      "chunkColorGreen": 255
+      "chunkWidth": 5,
+      "chunkColorRed": 219,
+      "chunkColorBlue": 17,
+      "chunkColorGreen": 111
     },
     {
       "chunkName": "stairs",
-      "chunkId": 2,
-      "chunkProbability": 0.33,
+      "chunkId": 3,
+      "chunkProbability": 0.4,
       "chunkHeight": 3,
-      "chunkWidth": 2,
+      "chunkWidth": 4,
       "chunkColorRed": 255,
       "chunkColorBlue": 255,
       "chunkColorGreen": 255

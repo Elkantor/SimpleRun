@@ -24,6 +24,11 @@ public class CollectionChunks
    public Chunk[] chunks;
 }
 
+[System.Serializable]
+public class Scores
+{
+    public float bestScore;
+}
 
 public class LoaderJSON {
 
@@ -47,4 +52,34 @@ public class LoaderJSON {
         }
     }
 
+    public float LoadBestScore(string scoresFileName)
+    {
+        string filePath = Path.Combine(Application.dataPath, scoresFileName);
+
+        if (File.Exists(filePath))
+        {
+            // Read the json from the file into a string
+            string dataAsJson = File.ReadAllText(filePath);
+            // Pass the json to JsonUtility, and tell it to create a GameData object from it
+            Scores scoresData = JsonUtility.FromJson<Scores>(dataAsJson);
+            return scoresData.bestScore;
+        }
+        else
+        {
+            Debug.LogError("Cannot load game data!");
+            return 0.0f;
+        }
+    }
+
+    public void SaveBestScore(float bestScore, string scoresFileName)
+    {
+        string filePath = Path.Combine(Application.dataPath, scoresFileName);
+
+        if (!File.Exists(filePath))
+        {
+            File.Create(filePath);
+        }
+        // Read the json from the file into a string
+        File.WriteAllText(filePath, "{\"bestScore\" : " + bestScore + "}");
+    }
 }
