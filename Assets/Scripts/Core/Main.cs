@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public struct LevelChunk
 {
@@ -9,13 +10,16 @@ public struct LevelChunk
 
 public class Main : MonoBehaviour {
 
-    public GameObject pauseText, gameOverText;
+
+    public GameObject pauseMenu, gameOverMenu, timeText, bestTimeText, startMenu;
     GameObject character;
-    //List<GameObject> levelChunks = new List<GameObject>();
     public List<LevelChunk> levelChunks = new List<LevelChunk>();
     bool stop = true;
     float currentPositionX = 0;
     float currentPositionY = 0;
+    float timeBegin, timePause;
+    float bestScore = 0.0f;
+    LoaderJSON loaderJson = new LoaderJSON();
 
     void Start() {
         character = GameObject.Find("Character");
@@ -26,9 +30,8 @@ public class Main : MonoBehaviour {
     private void InitializeMap() {
         currentPositionX = Camera.main.ViewportToWorldPoint(new Vector2(0, 0)).x;
         currentPositionY = 0;
-        LoaderJSON loaderChunks = new LoaderJSON();
-        Chunk[] chunks = loaderChunks.LoadGameData("Datas/Chunks.json");
-
+        Chunk[] chunks = loaderJson.LoadGameData("Datas/Chunks.json");
+        bestScore = loaderJson.LoadBestScore("Datas/Scores.json");
         float[] probabilities = new float[chunks.Length];
 
         probabilities[0] = chunks[0].chunkProbability;
@@ -155,33 +158,32 @@ public class Main : MonoBehaviour {
                 go.GetComponent<LevelComponent>().speedScrolling = 0;
             }
         }
+        float newTime = Time.time - timeBegin;
+        if (newTime > bestScore)
+        {
+            bestScore = newTime;
+            loaderJson.SaveBestScore(bestScore, "Datas/Scores.json");
 
+            UpdateBestTime("New record");
+        }
         //Active GameOver
-        gameOverText.SetActive(true);
+        gameOverMenu.SetActive(true);
         stop = true;
     }
 
     void Update()
     {
-        if (Input.GetKeyDown("space"))
-        {
-            StartGame();
-        }
         //To restart
         if (Input.GetKeyDown("r"))
         {
-            foreach(LevelChunk lc in levelChunks)
-            {
-                foreach(GameObject go in lc.gameObjects)
-                {
-                    DestroyImmediate(go);
-                }
-            }
-            levelChunks.Clear();
-            InitializeMap();
+            Restart();
         }
         if (stop)
         {
+            if (Input.GetKeyDown("space"))
+            {
+                StartGame();
+            }
             if (Input.GetKeyDown("escape"))
             {
                 Application.Quit();
@@ -189,19 +191,17 @@ public class Main : MonoBehaviour {
 
             if (Input.GetKeyDown("c"))
             {
-                foreach(LevelChunk lc in levelChunks)
-                {
-                    foreach (GameObject go in lc.gameObjects)
-                    {
-                        go.GetComponent<LevelComponent>().speedScrolling = 0.01f;
-                    }
-                }
-                pauseText.SetActive(false);
-                stop = false;
+                Continue();
             }
         }
         else
         {
+            float newTime = Time.time - timeBegin;
+            int min = (int)(newTime / 60);
+            int sec = (int)(newTime % 60);
+            string secStr = sec < 10 ? ("0" + sec.ToString()) : sec.ToString();
+            timeText.GetComponent<Text>().text = "Score time : " + min + ":" + secStr;
+
             if (Input.GetKeyDown("escape"))
             {
                 // Stop level movment
@@ -212,13 +212,15 @@ public class Main : MonoBehaviour {
                         go.GetComponent<LevelComponent>().speedScrolling = 0;
                     }
                 }
-                pauseText.SetActive(true);
+                pauseMenu.SetActive(true);
                 stop = true;
+                timePause = Time.time;
             }
         }
     }
 
-    void StartGame(){
+
+    public void StartGame(){
         foreach (LevelChunk lc in levelChunks)
         {
             foreach (GameObject go in lc.gameObjects)
@@ -229,5 +231,51 @@ public class Main : MonoBehaviour {
         }
         character.GetComponent<CubeController>().gameStarted=true;
         stop = false;
+        timeText.SetActive(true);
+        bestTimeText.SetActive(true);
+        timeBegin = Time.time;
+        startMenu.SetActive(false);
+        UpdateBestTime("Best time");
+    }
+
+    public void Continue()
+    {
+        if(stop)
+        {
+            foreach (LevelChunk lc in levelChunks)
+            {
+                foreach (GameObject go in lc.gameObjects)
+                {
+                    go.GetComponent<LevelComponent>().speedScrolling = 0.01f;
+                }
+            }
+            pauseMenu.SetActive(false);
+            stop = false;
+            timeBegin += Time.time - timePause;
+        }
+    }
+
+    public void Restart()
+    {
+        pauseMenu.SetActive(false);
+        gameOverMenu.SetActive(false);
+        foreach (LevelChunk lc in levelChunks)
+        {
+            foreach (GameObject go in lc.gameObjects)
+            {
+                DestroyImmediate(go);
+            }
+        }
+        levelChunks.Clear();
+        InitializeMap();
+        StartGame();
+    }
+
+    public void UpdateBestTime(string label)
+    {
+        int minBest = (int)(bestScore / 60);
+        int secBest = (int)(bestScore % 60);
+        string secBestStr = secBest < 10 ? ("0" + secBest.ToString()) : secBest.ToString();
+        bestTimeText.GetComponent<Text>().text = label+" : " + minBest + ":" + secBestStr;
     }
 }

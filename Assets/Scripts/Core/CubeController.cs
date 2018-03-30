@@ -15,6 +15,7 @@ public class CubeController : MonoBehaviour
     private AudioSource audioSquish;
     public Main gameManager;
     float cameraBoundXNegative;
+    bool becameInvisible = false;
 
     // Use this for initialization
     void Start()
@@ -55,7 +56,7 @@ public class CubeController : MonoBehaviour
         }
         if (Input.GetKeyDown("r"))
         {
-            transform.position = new Vector3(0.0f, 2.0f, 0.0f);
+            ResetPosition();
         }
         if (Input.GetKeyDown(KeyCode.UpArrow) && jumpCount == 0)
         {
@@ -85,7 +86,15 @@ public class CubeController : MonoBehaviour
         }
         if ((transform.position.x + transform.localScale.x / 10) <= cameraBoundXNegative)
         {
-            gameManager.GameOver();
+            if(!becameInvisible)
+            {
+                gameManager.GameOver();
+                becameInvisible = true;
+            }
+        }
+        else
+        {
+            becameInvisible = false;
         }
         //_rigidBody2D.position = new Vector2(_rigidBody2D.position.x+0.01f, _rigidBody2D.position.y);
         //Debug.Log();
@@ -102,5 +111,10 @@ public class CubeController : MonoBehaviour
                 transform.localScale += new Vector3(-0.5F, 0.5F, 0);
         }
         jumpCount = 0;
+    }
+
+    public void ResetPosition()
+    {
+        transform.position = new Vector3(0.0f, 2.0f, 0.0f);
     }
 }
