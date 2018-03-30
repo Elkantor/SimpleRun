@@ -7,10 +7,16 @@ public class CubeController : MonoBehaviour
     public float maxSpeed = 10f;
     private Rigidbody2D _rigidBody2D;
     private int jumpCount=0;
+    private AudioSource[] audioSources;
+    private AudioSource audioJump;
+    private AudioSource audioSquish;
 
     // Use this for initialization
     void Start()
     {
+        audioSources = GetComponents<AudioSource>();
+        audioJump = audioSources[0];
+        audioSquish = audioSources[1];
         _rigidBody2D = GetComponent<Rigidbody2D>();
     }
 
@@ -21,12 +27,14 @@ public class CubeController : MonoBehaviour
         {
             _rigidBody2D.AddForce(new Vector2(0, 500));
             transform.localScale += new Vector3(-0.5F, 0.5F, 0);
+            audioJump.Play();
             jumpCount = 1;
         }
 
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             transform.localScale += new Vector3(0.5F, -0.5F,0);
+            audioSquish.Play();
         }
         if (Input.GetKeyUp(KeyCode.DownArrow))
         {
