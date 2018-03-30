@@ -6,11 +6,13 @@ public class Main : MonoBehaviour {
 
     public GameObject pauseText, gameOverText;
     List<GameObject> levelChunks = new List<GameObject>();
+    GameObject character;
     bool stop = true;
     float currentPositionX = 0;
     float currentPositionY = 0;
 
     void Start() {
+        character = GameObject.Find("Character");
         DontDestroyOnLoad(gameObject);
         InitializeMap();
     }
@@ -155,6 +157,7 @@ public class Main : MonoBehaviour {
             LevelComponent levelComponentScript = chunk.GetComponent<LevelComponent>();
             levelComponentScript.gameStarted = true;
         }
+        character.GetComponent<CubeController>().gameStarted=true;
         stop = false;
     }
 }
