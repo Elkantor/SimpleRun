@@ -22,7 +22,7 @@
     },
     {
       "chunkName": "stairs",
-      "chunkId": 2,
+      "chunkId": 3,
       "chunkProbability": 0.33,
       "chunkHeight": 3,
       "chunkWidth": 2,
