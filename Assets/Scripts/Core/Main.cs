@@ -7,16 +7,30 @@ public class Main : MonoBehaviour {
     public GameObject pauseText, gameOverText;
     List<GameObject> levelChunks = new List<GameObject>();
     GameObject character;
+    List<GameObject> fallingBlocks = new List<GameObject>();
     GameObject fallingBlock;
     bool stop = true;
     float currentPositionX = 0;
     float currentPositionY = 0;
+    int indexBlockFalling = 0;
+    int updateCount = 0;
 
     void Start() {
         character = GameObject.Find("Character");
         fallingBlock = GameObject.Find("Fallingblock");
         DontDestroyOnLoad(gameObject);
         InitializeMap();
+        InitializeBlocks();
+    }
+
+    private void InitializeBlocks()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            GameObject newblock = Instantiate(fallingBlock);
+            fallingBlocks.Add(newblock);
+        }
+        fallingBlock.SetActive(false);
     }
 
     private void InitializeMap() {
@@ -151,6 +165,18 @@ public class Main : MonoBehaviour {
                 pauseText.SetActive(true);
                 stop = true;
             }
+            if(updateCount % 1000 == 0)
+            {
+                Debug.Log("1000");
+                if (Random.Range(0.0f, 1.0f) > 0.5f)
+                {
+                    fallingBlocks[indexBlockFalling].GetComponent<FallingBlockScript>().EnableFalling();
+                    indexBlockFalling++;
+                    if (indexBlockFalling > 3) indexBlockFalling = 0;
+                }
+                updateCount = 1;
+            }
+            updateCount++;
         }
     }
 
