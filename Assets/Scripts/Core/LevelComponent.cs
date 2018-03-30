@@ -13,7 +13,8 @@ public class LevelComponent : MonoBehaviour {
     public float colorB;
     public float colorG;
     public float speedScrolling = 0.01f;
-    public GameObject previousChunk;
+    //public GameObject previousChunk;
+    public LevelChunk previousChunk;
     public Chunk[] chunksPossibilities;
     float[] probabilities;
     float cameraBoundXNegative;
@@ -25,7 +26,8 @@ public class LevelComponent : MonoBehaviour {
         float colorR, 
         float colorG, 
         float colorB, 
-        GameObject previousChunk, 
+        //GameObject previousChunk, 
+        LevelChunk previousChunk,
         Chunk[] chunksPossibilities
     )
     {
@@ -74,13 +76,56 @@ public class LevelComponent : MonoBehaviour {
         colorG = chunk.chunkColorGreen;
         colorB = chunk.chunkColorBlue;
 
+        if(previousChunk.gameObjects.Count > 1)
+        {
+            GameObject corridorTop = previousChunk.gameObjects[1];
+            previousChunk.gameObjects.RemoveAt(1);
+            DestroyImmediate(corridorTop);
+        }
+
         spriteRenderer.color = new Color(chunk.chunkColorRed, chunk.chunkColorGreen, chunk.chunkColorBlue);
         transform.localScale = new Vector3(width, height, 1);
         // Set the position of this game object, to be next to the previous game object
-        float newX = previousChunk.transform.position.x + (previousChunk.transform.localScale.x/10) + (width/10);
+        float newX = previousChunk.gameObjects[0].transform.position.x + (previousChunk.gameObjects[0].transform.localScale.x/10) + (width/10);
         float newY = height/10;
         transform.position = new Vector3(newX, newY, 0.0f);
-        
+
+        if (chunk.chunkId == 2)
+        {
+            Debug.Log("Corridor created");
+            int chunkNumber = 0;
+            foreach (LevelChunk lc in GameObject.Find("GameManager").GetComponent<Main>().levelChunks)
+            {
+                chunkNumber += lc.gameObjects.Count;
+            }
+            GameObject chunkGameObject = new GameObject("Chunk" + chunkNumber);
+
+            LevelComponent levelComponent = chunkGameObject.AddComponent<LevelComponent>();
+            levelComponent.LoadLevelComponent(
+                chunk.chunkWidth,
+                chunk.chunkHeight,
+                chunk.chunkProbability,
+                chunk.chunkColorRed,
+                chunk.chunkColorGreen,
+                chunk.chunkColorBlue,
+                previousChunk,
+                chunksPossibilities
+            );
+            levelComponent.gameStarted = true;
+
+            SpriteRenderer chunkSpriteRenderer2 = chunkGameObject.AddComponent<SpriteRenderer>();
+            chunkSpriteRenderer2.color = new Color(colorR, colorG, colorB);
+            chunkSpriteRenderer2.sprite = GetComponent<SpriteRenderer>().sprite;
+
+            BoxCollider2D chunkBoxCollider2D2 = chunkGameObject.AddComponent<BoxCollider2D>();
+            chunkBoxCollider2D2.size = new Vector2(0.2f, 0.2f);
+
+            float newY2 = newY + (height / 10) + 0.6f;
+            chunkGameObject.transform.position = new Vector3(newX + 0.1f, newY2, 0.0f);
+            chunkGameObject.transform.localScale = new Vector3(chunk.chunkWidth - 1, chunk.chunkHeight, 1.0f);
+            previousChunk.gameObjects.Add(chunkGameObject);
+        }
+
     }
 
     private void RegenerateChunk(){
@@ -90,7 +135,7 @@ public class LevelComponent : MonoBehaviour {
         {
             if (newProbability >= previousProbability && newProbability <= probabilities[i])
             {
-                SetChunkLevelComponent(chunksPossibilities[i], previousChunk.transform.position);
+                SetChunkLevelComponent(chunksPossibilities[i], previousChunk.gameObjects[0].transform.position);
                 return;
             }
             previousProbability += probabilities[i];

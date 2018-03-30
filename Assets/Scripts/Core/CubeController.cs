@@ -4,17 +4,25 @@ using UnityEngine;
 
 public class CubeController : MonoBehaviour
 {
-    public float maxSpeed = 10f;
-    public Main gameManager;
-
+    public float maxSpeed = 1f;
+    public float speedScrolling = 0.01f;
+    public bool gameStarted;
     private Rigidbody2D _rigidBody2D;
     private int jumpCount=0;
+    private bool droit=true;
+    private AudioSource[] audioSources;
+    private AudioSource audioJump;
+    private AudioSource audioSquish;
+    public Main gameManager;
     float cameraBoundXNegative;
     bool becameInvisible = false;
 
     // Use this for initialization
     void Start()
     {
+        audioSources = GetComponents<AudioSource>();
+        audioJump = audioSources[0];
+        audioSquish = audioSources[1];
         if (!gameManager && GameObject.Find("GameManager"))
         {
             gameManager = GameObject.Find("GameManager").GetComponent<Main>();
@@ -26,6 +34,26 @@ public class CubeController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (gameStarted)
+        {
+            transform.position = new Vector3(transform.position.x - speedScrolling, transform.position.y, transform.position.z);
+        }
+
+        //Check si cube est tombé
+        if (Mathf.Round(transform.rotation.eulerAngles.z) == 90 || Mathf.Round(transform.rotation.eulerAngles.z) == 270)
+            droit = false;
+        else
+            droit = true;
+
+        float translation = Input.GetAxis("Horizontal") * maxSpeed;
+        if (translation != 0)
+        {
+            if (translation > 2)
+                translation = 2;
+            if (translation < -2)
+                translation = -2;
+            _rigidBody2D.velocity = new Vector2(translation, _rigidBody2D.velocity.y);
+        }
         if (Input.GetKeyDown("r"))
         {
             ResetPosition();
@@ -33,17 +61,28 @@ public class CubeController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.UpArrow) && jumpCount == 0)
         {
             _rigidBody2D.AddForce(new Vector2(0, 500));
-            transform.localScale += new Vector3(-0.5F, 0.5F, 0);
+            if (!droit)
+                transform.localScale += new Vector3(0.5F, -0.5F, 0);
+            else
+                transform.localScale += new Vector3(-0.5F, 0.5F, 0);
+            audioJump.Play();
             jumpCount = 1;
         }
 
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            transform.localScale += new Vector3(0.5F, -0.5F,0);
+            if (droit)
+                transform.localScale += new Vector3(0.5F, -0.5F,0);
+            else
+                transform.localScale += new Vector3(-0.5F, 0.5F, 0);
+            audioSquish.Play();
         }
         if (Input.GetKeyUp(KeyCode.DownArrow))
         {
-            transform.localScale += new Vector3(-0.5F, 0.5F, 0);
+            if (droit)
+                transform.localScale += new Vector3(-0.5F, 0.5F, 0);
+            else
+                transform.localScale += new Vector3(0.5F, -0.5F, 0);
         }
         if ((transform.position.x + transform.localScale.x / 10) <= cameraBoundXNegative)
         {
@@ -66,7 +105,10 @@ public class CubeController : MonoBehaviour
 
         if (jumpCount == 1)
         {
-            transform.localScale += new Vector3(0.5F, -0.5F, 0);
+            if (droit)
+                transform.localScale += new Vector3(0.5F, -0.5F, 0);
+            else
+                transform.localScale += new Vector3(-0.5F, 0.5F, 0);
         }
         jumpCount = 0;
     }
