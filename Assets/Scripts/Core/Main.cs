@@ -1,14 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Main : MonoBehaviour {
 
-    public GameObject pauseText, gameOverText;
+    public GameObject pauseMenu, gameOverMenu, timeText, bestTimeText, startMenu;
     List<GameObject> levelChunks = new List<GameObject>();
     bool stop = true;
     float currentPositionX = 0;
     float currentPositionY = 0;
+    float timeBegin, timePause;
+    float bestScore = 0.0f;
+    LoaderJSON loaderJson = new LoaderJSON();
 
     void Start() {
         DontDestroyOnLoad(gameObject);
@@ -18,9 +22,8 @@ public class Main : MonoBehaviour {
     private void InitializeMap() {
         currentPositionX = Camera.main.ViewportToWorldPoint(new Vector2(0, 0)).x;
         currentPositionY = 0;
-        LoaderJSON loaderChunks = new LoaderJSON();
-        Chunk[] chunks = loaderChunks.LoadGameData("Datas/Chunks.json");
-
+        Chunk[] chunks = loaderJson.LoadGameData("Datas/Chunks.json");
+        bestScore = loaderJson.LoadBestScore("Datas/Scores.json");
         float[] probabilities = new float[chunks.Length];
 
         probabilities[0] = chunks[0].chunkProbability;
@@ -96,30 +99,35 @@ public class Main : MonoBehaviour {
         {
             chunk.GetComponent<LevelComponent>().speedScrolling = 0;
         }
+        float newTime = Time.time - timeBegin;
+        if (newTime > bestScore)
+        {
+            bestScore = newTime;
+            loaderJson.SaveBestScore(bestScore, "Datas/Scores.json");
 
+            int minBest = (int)(bestScore / 60);
+            int secBest = (int)(bestScore % 60);
+            string secBestStr = secBest < 10 ? ("0" + secBest.ToString()) : secBest.ToString();
+            bestTimeText.GetComponent<Text>().text = "New record : " + minBest + ":" + secBestStr;
+        }
         //Active GameOver
-        gameOverText.SetActive(true);
+        gameOverMenu.SetActive(true);
         stop = true;
     }
 
     void Update()
     {
-        if (Input.GetKeyDown("space"))
-        {
-            StartGame();
-        }
         //To restart
         if (Input.GetKeyDown("r"))
         {
-            foreach(GameObject go in levelChunks)
-            {
-                DestroyImmediate(go);
-            }
-            levelChunks.Clear();
-            InitializeMap();
+            Restart();
         }
         if (stop)
         {
+            if (Input.GetKeyDown("space"))
+            {
+                StartGame();
+            }
             if (Input.GetKeyDown("escape"))
             {
                 Application.Quit();
@@ -127,16 +135,17 @@ public class Main : MonoBehaviour {
 
             if (Input.GetKeyDown("c"))
             {
-                foreach (GameObject chunk in levelChunks)
-                {
-                    chunk.GetComponent<LevelComponent>().speedScrolling = 0.01f;
-                }
-                pauseText.SetActive(false);
-                stop = false;
+                Continue();
             }
         }
         else
         {
+            float newTime = Time.time - timeBegin;
+            int min = (int)(newTime / 60);
+            int sec = (int)(newTime % 60);
+            string secStr = sec < 10 ? ("0" + sec.ToString()) : sec.ToString();
+            timeText.GetComponent<Text>().text = "Score time : " + min + ":" + secStr;
+
             if (Input.GetKeyDown("escape"))
             {
                 // Stop level movment
@@ -144,17 +153,54 @@ public class Main : MonoBehaviour {
                 {
                     chunk.GetComponent<LevelComponent>().speedScrolling = 0;
                 }
-                pauseText.SetActive(true);
+                pauseMenu.SetActive(true);
                 stop = true;
+                timePause = Time.time;
             }
         }
     }
 
-    void StartGame(){
+    public void StartGame(){
         foreach(GameObject chunk in levelChunks){
             LevelComponent levelComponentScript = chunk.GetComponent<LevelComponent>();
             levelComponentScript.gameStarted = true;
         }
         stop = false;
+        timeText.SetActive(true);
+        bestTimeText.SetActive(true);
+        timeBegin = Time.time;
+        startMenu.SetActive(false);
+
+        int minBest = (int)(bestScore / 60);
+        int secBest = (int)(bestScore % 60);
+        string secBestStr = secBest < 10 ? ("0" + secBest.ToString()) : secBest.ToString();
+        bestTimeText.GetComponent<Text>().text = "Best time : " + minBest + ":" + secBestStr;
+    }
+
+    public void Continue()
+    {
+        if(stop)
+        {
+            foreach (GameObject chunk in levelChunks)
+            {
+                chunk.GetComponent<LevelComponent>().speedScrolling = 0.01f;
+            }
+            pauseMenu.SetActive(false);
+            stop = false;
+            timeBegin += Time.time - timePause;
+        }
+    }
+
+    public void Restart()
+    {
+        pauseMenu.SetActive(false);
+        gameOverMenu.SetActive(false);
+        foreach (GameObject go in levelChunks)
+        {
+            DestroyImmediate(go);
+        }
+        levelChunks.Clear();
+        InitializeMap();
+        StartGame();
     }
 }
