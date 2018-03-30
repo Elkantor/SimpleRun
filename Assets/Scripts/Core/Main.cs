@@ -105,10 +105,7 @@ public class Main : MonoBehaviour {
             bestScore = newTime;
             loaderJson.SaveBestScore(bestScore, "Datas/Scores.json");
 
-            int minBest = (int)(bestScore / 60);
-            int secBest = (int)(bestScore % 60);
-            string secBestStr = secBest < 10 ? ("0" + secBest.ToString()) : secBest.ToString();
-            bestTimeText.GetComponent<Text>().text = "New record : " + minBest + ":" + secBestStr;
+            UpdateBestTime("New record");
         }
         //Active GameOver
         gameOverMenu.SetActive(true);
@@ -170,11 +167,7 @@ public class Main : MonoBehaviour {
         bestTimeText.SetActive(true);
         timeBegin = Time.time;
         startMenu.SetActive(false);
-
-        int minBest = (int)(bestScore / 60);
-        int secBest = (int)(bestScore % 60);
-        string secBestStr = secBest < 10 ? ("0" + secBest.ToString()) : secBest.ToString();
-        bestTimeText.GetComponent<Text>().text = "Best time : " + minBest + ":" + secBestStr;
+        UpdateBestTime("Best time");
     }
 
     public void Continue()
@@ -202,5 +195,13 @@ public class Main : MonoBehaviour {
         levelChunks.Clear();
         InitializeMap();
         StartGame();
+    }
+
+    public void UpdateBestTime(string label)
+    {
+        int minBest = (int)(bestScore / 60);
+        int secBest = (int)(bestScore % 60);
+        string secBestStr = secBest < 10 ? ("0" + secBest.ToString()) : secBest.ToString();
+        bestTimeText.GetComponent<Text>().text = label+" : " + minBest + ":" + secBestStr;
     }
 }
