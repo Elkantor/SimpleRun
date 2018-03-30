@@ -60,9 +60,9 @@ public class CubeController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.UpArrow) && jumpCount == 0)
         {
             _rigidBody2D.AddForce(new Vector2(0, 500));
-            if (!droit)
+            if (!droit && transform.localScale.y!=0.5)
                 transform.localScale += new Vector3(0.5F, -0.5F, 0);
-            else
+            else if (transform.localScale.x != 0.5)
                 transform.localScale += new Vector3(-0.5F, 0.5F, 0);
             audioJump.Play();
             jumpCount = 1;
@@ -70,17 +70,17 @@ public class CubeController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            if (droit)
+            if (droit && transform.localScale.y != 0.5)
                 transform.localScale += new Vector3(0.5F, -0.5F,0);
-            else
+            else if (transform.localScale.x != 0.5)
                 transform.localScale += new Vector3(-0.5F, 0.5F, 0);
             audioSquish.Play();
         }
         if (Input.GetKeyUp(KeyCode.DownArrow))
         {
-            if (droit)
+            if (droit && transform.localScale.x != 0.5)
                 transform.localScale += new Vector3(-0.5F, 0.5F, 0);
-            else
+            else if (transform.localScale.y != 0.5)
                 transform.localScale += new Vector3(0.5F, -0.5F, 0);
         }
         if ((transform.position.x + transform.localScale.x / 10) <= cameraBoundXNegative)
@@ -96,9 +96,9 @@ public class CubeController : MonoBehaviour
 
         if (jumpCount == 1)
         {
-            if (droit)
+            if (droit && transform.localScale.y != 0.5)
                 transform.localScale += new Vector3(0.5F, -0.5F, 0);
-            else
+            else if (transform.localScale.x != 0.5)
                 transform.localScale += new Vector3(-0.5F, 0.5F, 0);
         }
         jumpCount = 0;
