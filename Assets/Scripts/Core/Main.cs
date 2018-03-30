@@ -9,8 +9,7 @@ public struct LevelChunk
 }
 
 public class Main : MonoBehaviour {
-
-
+    
     public GameObject pauseMenu, gameOverMenu, timeText, bestTimeText, startMenu;
     GameObject character;
     public List<LevelChunk> levelChunks = new List<LevelChunk>();
@@ -20,11 +19,27 @@ public class Main : MonoBehaviour {
     public float timeBegin, timePause;
     float bestScore = 0.0f;
     LoaderJSON loaderJson = new LoaderJSON();
+    GameObject fallingBlock;
+    int indexBlockFalling = 0;
+    int updateCount = 0;
+    List<GameObject> fallingBlocks = new List<GameObject>();
 
     void Start() {
         character = GameObject.Find("Character");
+        fallingBlock = GameObject.Find("Fallingblock");
         DontDestroyOnLoad(gameObject);
         InitializeMap();
+        InitializeBlocks();
+    }
+
+    private void InitializeBlocks()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            GameObject newblock = Instantiate(fallingBlock);
+            fallingBlocks.Add(newblock);
+        }
+        fallingBlock.SetActive(false);
     }
 
     private void InitializeMap() {
@@ -216,6 +231,18 @@ public class Main : MonoBehaviour {
                 stop = true;
                 timePause = Time.time;
             }
+            if(updateCount % 1000 == 0)
+            {
+                Debug.Log("1000");
+                if (Random.Range(0.0f, 1.0f) > 0.5f)
+                {
+                    fallingBlocks[indexBlockFalling].GetComponent<FallingBlockScript>().EnableFalling();
+                    indexBlockFalling++;
+                    if (indexBlockFalling > 3) indexBlockFalling = 0;
+                }
+                updateCount = 1;
+            }
+            updateCount++;
         }
     }
 
@@ -230,6 +257,7 @@ public class Main : MonoBehaviour {
             }
         }
         character.GetComponent<CubeController>().gameStarted=true;
+        fallingBlock.GetComponent<FallingBlockScript>().gameStarted = true;
         stop = false;
         timeText.SetActive(true);
         bestTimeText.SetActive(true);
@@ -268,6 +296,7 @@ public class Main : MonoBehaviour {
         }
         levelChunks.Clear();
         InitializeMap();
+        character.GetComponent<CubeController>().speedScrolling = 0.01f;
         StartGame();
     }
 

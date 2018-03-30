@@ -36,6 +36,8 @@ public class CubeController : MonoBehaviour
     {
         if (gameStarted)
         {
+            Main main = GameObject.Find("GameManager").GetComponent<Main>();
+            speedScrolling += Mathf.Lerp(main.timeBegin, Time.time, Mathf.SmoothStep(main.timeBegin, Time.time, 0.01f)) / 1000000.0f;
             transform.position = new Vector3(transform.position.x - speedScrolling, transform.position.y, transform.position.z);
         }
 
@@ -48,8 +50,7 @@ public class CubeController : MonoBehaviour
         float translation = Input.GetAxis("Horizontal") * maxSpeed;
         if (translation != 0)
         {
-            if (translation > 2)
-                translation = 2;
+            
             if (translation < -2)
                 translation = -2;
             _rigidBody2D.velocity = new Vector2(translation, _rigidBody2D.velocity.y);
@@ -60,10 +61,10 @@ public class CubeController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.UpArrow) && jumpCount == 0)
         {
-            _rigidBody2D.AddForce(new Vector2(0, 500));
-            if (!droit)
+            _rigidBody2D.AddForce(new Vector2(0, 15),ForceMode2D.Impulse);
+            if (!droit && transform.localScale.y!=0.5)
                 transform.localScale += new Vector3(0.5F, -0.5F, 0);
-            else
+            else if (transform.localScale.x != 0.5)
                 transform.localScale += new Vector3(-0.5F, 0.5F, 0);
             audioJump.Play();
             jumpCount = 1;
@@ -71,17 +72,17 @@ public class CubeController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            if (droit)
+            if (droit && transform.localScale.y != 0.5)
                 transform.localScale += new Vector3(0.5F, -0.5F,0);
-            else
+            else if (transform.localScale.x != 0.5)
                 transform.localScale += new Vector3(-0.5F, 0.5F, 0);
             audioSquish.Play();
         }
         if (Input.GetKeyUp(KeyCode.DownArrow))
         {
-            if (droit)
+            if (droit && transform.localScale.x != 0.5)
                 transform.localScale += new Vector3(-0.5F, 0.5F, 0);
-            else
+            else if (transform.localScale.y != 0.5)
                 transform.localScale += new Vector3(0.5F, -0.5F, 0);
         }
         if ((transform.position.x + transform.localScale.x / 10) <= cameraBoundXNegative)
@@ -105,9 +106,9 @@ public class CubeController : MonoBehaviour
 
         if (jumpCount == 1)
         {
-            if (droit)
+            if (droit && transform.localScale.y != 0.5)
                 transform.localScale += new Vector3(0.5F, -0.5F, 0);
-            else
+            else if (transform.localScale.x != 0.5)
                 transform.localScale += new Vector3(-0.5F, 0.5F, 0);
         }
         jumpCount = 0;
